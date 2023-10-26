@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Binance-bot.iml" filepath="$PROJECT_DIR$/.idea/Binance-bot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/binance-bot.iml" filepath="$PROJECT_DIR$/.idea/binance-bot.iml" />
     </modules>
   </component>
 </project>
