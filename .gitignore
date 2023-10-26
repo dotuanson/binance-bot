@@ -1,1 +1,3 @@
 .idea
+*.env
+cmd/binance-bot/binance-bot

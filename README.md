@@ -16,13 +16,11 @@
 <h3 id="built-with"> 💻 Built with </h3>
 
 * [Golang](https://go.dev)
-* [Docker](https://www.docker.com)
 
 <h2 id="getting-started"> 🛠 Getting started </h2>
 
 <h3 id="prerequisites"> 📎 Prerequisites </h3>
 
-- Docker `3.7.11`
 - Go `1.20.2`
 - GNU Make `3.81`
 
@@ -38,7 +36,11 @@ make run
 ```
 3. Enter your configurations in `.env`
 ```
-
+API_KEY=""
+SECRET_KEY=""
+BASE_URL=""
+TELEGRAM_TOKEN=""
+TELEGRAM_CHATID=""
 ```
 
 <h2 id="usage">  🤖 Usage </h2>
@@ -46,16 +48,7 @@ make run
 ### 📌 Golang
 
 ```commandline
-make run
-```
-### 📌 Docker-compose
-```commandline
-make server
-```
-
-### 📌 Test
-```commandline
-make test
+make deploy
 ```
 
 
@@ -68,5 +61,3 @@ make test
 5. Open a Pull Request
 
 <h2 id="contributors"> 👨‍💻 Contributors </h2>
-
-Thanks to the following PICs who have contributed to this project
