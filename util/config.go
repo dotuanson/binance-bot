@@ -12,6 +12,7 @@ type Config struct {
 	BaseURL    string `mapstructure:"BASE_URL"`
 	TeleTOKEN  string `mapstructure:"TELEGRAM_TOKEN"`
 	TeleCHATID int64
+	CoinLIST   []string
 }
 
 // LoadConfig reads configuration from file or environment variables.
@@ -29,5 +30,6 @@ func LoadConfig(path string) (config Config, err error) {
 
 	err = viper.Unmarshal(&config)
 	config.TeleCHATID = viper.GetInt64("TELEGRAM_CHATID")
+	config.CoinLIST = viper.GetStringSlice("COIN_LIST")
 	return
 }

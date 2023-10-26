@@ -11,40 +11,44 @@ import (
 	"time"
 )
 
-func getAvgPrice(ctx context.Context, client *binanceConnector.Client, c chan string, errCh chan error) {
-	prices := make([]float64, 0)
+func getAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan string, errCh chan error, coins []string) {
+	prices := make([][]float64, len(coins))
+	for i := 0; i < len(coins); i++ {
+		prices[i] = make([]float64, 0)
+	}
 	for {
-		avgPrice, err := client.NewAvgPriceService().Symbol("NEARUSDT").Do(ctx)
-		if err != nil {
-			errCh <- err
-		}
-		price, err := strconv.ParseFloat(avgPrice.Price, 64)
-		if err != nil {
-			errCh <- err
-		}
-		prices = append(prices, price)
-		if len(prices) >= 2 {
-			log.Printf("%f - %f - %f", prices[0], prices[1], prices[1]-prices[0])
-			if ((prices[1]-prices[0])/prices[0] - 0.02) >= 0 {
-				c <- fmt.Sprintf(`
-					🚀 %s is bull-run in 2 minutes, increase 2%%\n
-				`, "NEAR")
-			} else if ((prices[0]-prices[1])/prices[0] - 0.02) >= 0 {
-				c <- fmt.Sprintf(`
-					🔥 %s is bear-run in 2 minutes, decrease 2%%\n
-				`, "NEAR")
+		for idx, coin := range coins {
+			avgPrice, err := client.NewAvgPriceService().Symbol(coin).Do(ctx)
+			if err != nil {
+				errCh <- err
 			}
-			prices = prices[1:]
+			price, err := strconv.ParseFloat(avgPrice.Price, 64)
+			if err != nil {
+				errCh <- err
+			}
+			prices[idx] = append(prices[idx], price)
+			if len(prices[idx]) >= 2 {
+				diff := prices[idx][1] - prices[idx][0]
+				percent := diff / prices[idx][0] * 100
+				log.Printf("[%s] - CurPrice = %f - %.2f%%", coin, diff, percent)
+				if (percent - 2) >= 0 {
+					textCh <- fmt.Sprintf(`🚀 [%s] is bull-run in 2 minutes, increase 2%%
+							=> Current price: %fUSDT`, coin, prices[idx][1])
+				} else if (-percent - 2) >= 0 {
+					textCh <- fmt.Sprintf(`🔥 [%s] is bear-run in 2 minutes, decrease 2%%
+							=> Current price: %fUSDT`, coin, prices[idx][1])
+				}
+				prices[idx] = prices[idx][1:]
+			}
 		}
 		time.Sleep(time.Minute * 2)
 	}
 }
 
-func sendTeleAlert(bot *tgbotapi.BotAPI, teleChatID int64, c chan string, errCh chan error) {
+func sendTeleAlert(bot *tgbotapi.BotAPI, teleChatID int64, textCh chan string, errCh chan error) {
 	for {
-		text := binanceConnector.PrettyPrint(<-c)
-		msg := tgbotapi.NewMessage(teleChatID, text)
-		_, err := bot.Send(msg)
+		text := tgbotapi.NewMessage(teleChatID, <-textCh)
+		_, err := bot.Send(text)
 		if err != nil {
 			errCh <- err
 		}
@@ -66,7 +70,7 @@ func main() {
 
 	client := binanceConnector.NewClient(config.ApiKEY, config.SecretKEY, config.BaseURL)
 	textCh := make(chan string)
-	go getAvgPrice(ctx, client, textCh, errCh)
+	go getAvgPrice(ctx, client, textCh, errCh, config.CoinLIST)
 	go sendTeleAlert(bot, config.TeleCHATID, textCh, errCh)
 	for {
 		err = <-errCh
