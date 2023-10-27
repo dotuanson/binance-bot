@@ -30,7 +30,7 @@
 ```sh
 git clone https://github.com/dotuanson/binance-bot
 ```
-2. Enter your configurations in `.env`
+2. Create `dev.env` file and filling your configurations
 ```
 COIN_LIST=""
 API_KEY=""
