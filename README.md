@@ -30,12 +30,9 @@
 ```sh
 git clone https://github.com/dotuanson/binance-bot
 ```
-2. Install packages
-```sh
-make run
+2. Enter your configurations in `.env`
 ```
-3. Enter your configurations in `.env`
-```
+COIN_LIST=""
 API_KEY=""
 SECRET_KEY=""
 BASE_URL=""
@@ -45,11 +42,21 @@ TELEGRAM_CHATID=""
 
 <h2 id="usage">  🤖 Usage </h2>
 
-### 📌 Golang
+### 📌 Golang testing
+```commandline
+make test
+```
 
+### 📌 Golang building
+```commandline
+make build
+```
+
+### 📌 Docker compose
 ```commandline
 make deploy
 ```
+
 
 
 <h2 id="contributing-to-project"> 👋 Contributing to project </h2>
