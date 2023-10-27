@@ -2,10 +2,10 @@ test:
 	go test -v -cover ./test/
 
 build:
-	rm -rf ./cmd/binance-bot/binance-bot
-	go build -o cmd/binance-bot/binance-bot cmd/binance-bot/main.go
+	rm -rf ./cmd/binance-bot
+	go build -o cmd/binance-bot cmd/main.go
 
 deploy:
-	docker compose up
+	docker compose up --force-recreate --detach --build binance-bot
 
-.PHONY: build clean deploy build_linux test
+.PHONY: test build deploy

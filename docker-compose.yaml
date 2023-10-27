@@ -11,7 +11,7 @@ networks:
 
 
 services:
-  app:
+  binance-bot:
     image: binance-bot:latest
     build:
       context: ./
