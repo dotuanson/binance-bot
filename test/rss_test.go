@@ -8,6 +8,6 @@ import (
 
 func TestRSS(t *testing.T) {
 	textCh := make(chan string, 10)
-	go rss.FeedRSS("https://cointelegraph.com/rss/tag/bitcoin", textCh)
+	go rss.FeedRSS([]string{"https://cointelegraph.com/rss/tag/bitcoin"}, textCh)
 	time.Sleep(time.Second * 10)
 }
