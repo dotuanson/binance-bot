@@ -11,8 +11,11 @@ import (
 	"log"
 )
 
-const (
-	FeedUrl = "https://cointelegraph.com/rss/tag/bitcoin"
+var (
+	FeedUrls = []string{
+		"https://cointelegraph.com/rss/tag/bitcoin",
+		"https://cointelegraph.com/rss/tag/eth",
+	}
 )
 
 func main() {
@@ -32,7 +35,7 @@ func main() {
 	textCh := make(chan string, 10)
 	go binance.WatchAvgPrice(ctx, client, textCh, errCh, config.CoinLIST)
 	go telegram.SendTeleAlert(bot, config.TeleCHATID, textCh, errCh)
-	go rss.FeedRSS(FeedUrl, textCh)
+	go rss.FeedRSS(FeedUrls, textCh)
 	for {
 		err = <-errCh
 		log.Fatal(err)
