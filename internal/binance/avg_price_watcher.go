@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	binanceConnector "github.com/binance/binance-connector-go"
+	"log"
 	"strconv"
 	"time"
 )
@@ -26,12 +27,16 @@ func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh 
 			}
 			diff := closePrice - openPrice
 			percent := diff / openPrice * 100
-			if (percent - 2) >= 0 {
-				textCh <- fmt.Sprintf(`🚀 [%s] is bullish in 5 minutes, increase 2%%
-							=> Current high price: USDT\n`, coin)
-			} else if (-percent - 2) >= 0 {
-				textCh <- fmt.Sprintf(`🔥 [%s] is bearish in 5 minutes, decrease 2%%
-							=> Current low price: USDT\n`, coin)
+			log.Printf("Coin: %s, "+
+				"Percent: %.2f %%, "+
+				"Close Price %f, "+
+				"Open Price %f", coin, percent, closePrice, openPrice)
+			if (percent - 1) >= 0 {
+				textCh <- fmt.Sprintf("🚀 [%s] is BULLISH (up 1%%) in 5m, "+
+					"price: %f USDT\n", coin, closePrice)
+			} else if (-percent - 1) >= 0 {
+				textCh <- fmt.Sprintf("🔥 [%s] is BEARISH (down 1%%) in 5m, "+
+					"price: %f USDT\n", coin, closePrice)
 			}
 		}
 		time.Sleep(time.Second * 5)
