@@ -29,11 +29,11 @@ func GetAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh ch
 				diff := prices[idx][1] - prices[idx][0]
 				percent := diff / prices[idx][0] * 100
 				log.Printf("[%s] CurPrice=%f : increase %.2f%%\n", coin, prices[idx][1], percent)
-				if (percent - 2) >= 0 {
-					textCh <- fmt.Sprintf(`🚀 [%s] is bullish in 5 minutes, increase 2%%
+				if (percent - 1) >= 0 {
+					textCh <- fmt.Sprintf(`🚀 [%s] is bullish in 5 minutes, increase 1%%
 							=> Current price: %fUSDT\n`, coin, prices[idx][1])
-				} else if (-percent - 2) >= 0 {
-					textCh <- fmt.Sprintf(`🔥 [%s] is bearish in 5 minutes, decrease 2%%
+				} else if (-percent - 1) >= 0 {
+					textCh <- fmt.Sprintf(`🔥 [%s] is bearish in 5 minutes, decrease 1%%
 							=> Current price: %fUSDT\n`, coin, prices[idx][1])
 				}
 				prices[idx] = prices[idx][1:]
