@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func GetAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan string, errCh chan error, coins []string) {
+func GetAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coins []string) {
 	prices := make([][]float64, len(coins))
 	for i := 0; i < len(coins); i++ {
 		prices[i] = make([]float64, 0)
