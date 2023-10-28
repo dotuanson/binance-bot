@@ -2,7 +2,9 @@ package test
 
 import (
 	"context"
+	binanceConnector "github.com/binance/binance-connector-go"
 	"github.com/stretchr/testify/require"
+	"log"
 	"testing"
 )
 
@@ -12,7 +14,8 @@ func TestHistoricalTradeLookup(t *testing.T) {
 }
 
 func TestKlines(t *testing.T) {
-	_, err := testClient.NewKlinesService().Symbol("NEARUSDT").Interval("1m").Do(context.Background())
+	res, err := testClient.NewKlinesService().Symbol("NEARUSDT").Interval("5m").Do(context.Background())
+	log.Println(binanceConnector.PrettyPrint(res[len(res)-1]))
 	require.NoError(t, err)
 }
 
