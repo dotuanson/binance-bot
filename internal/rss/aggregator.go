@@ -18,6 +18,7 @@ func getFeed(feedUrl string) *gofeed.Feed {
 
 func FeedRSS(feedUrls []string, textCh chan<- string) {
 	for {
+		itemTitle := make(map[string]bool)
 		currTime := time.Now()
 		for _, feedUrl := range feedUrls {
 			feed := getFeed(feedUrl)
@@ -28,9 +29,12 @@ func FeedRSS(feedUrls []string, textCh chan<- string) {
 						location, _ := time.LoadLocation("Asia/Bangkok")
 						currentTimeUTC7 := item.PublishedParsed.In(location)
 						currentTimeUTC7Format := currentTimeUTC7.Format("2006/01/02 - 15:04")
-						text := fmt.Sprintf("[%v] %v\nLink: %v", currentTimeUTC7Format, item.Title, item.Link)
-						log.Print(text)
-						textCh <- text
+						if !itemTitle[item.Title] {
+							itemTitle[item.Title] = true
+							text := fmt.Sprintf("[%v] %v\nLink: %v", currentTimeUTC7Format, item.Title, item.Link)
+							log.Print(text)
+							textCh <- text
+						}
 					}
 				}(item)
 			}
