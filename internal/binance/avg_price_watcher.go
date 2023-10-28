@@ -13,7 +13,7 @@ const (
 	QueueLength int = 10
 )
 
-func GetAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coins []string) {
+func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coins []string) {
 	prices := make([][]float64, len(coins))
 	for i := 0; i < len(coins); i++ {
 		prices[i] = make([]float64, 0)
@@ -32,13 +32,13 @@ func GetAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh ch
 			if len(prices[idx]) >= QueueLength {
 				diff := prices[idx][QueueLength-1] - prices[idx][0]
 				percent := diff / prices[idx][0] * 100
-				log.Printf("[%s] CurPrice=%f : increase %.2f%%\n", coin, prices[idx][1], percent)
+				log.Printf("[%s] CurPrice=%f : increase %.2f%%\n", coin, prices[idx][QueueLength-1], percent)
 				if (percent - 1) >= 0 {
 					textCh <- fmt.Sprintf(`🚀 [%s] is bullish in 5 minutes, increase 1%%
-							=> Current price: %fUSDT\n`, coin, prices[idx][1])
+							=> Current price: %fUSDT\n`, coin, prices[idx][QueueLength-1])
 				} else if (-percent - 1) >= 0 {
 					textCh <- fmt.Sprintf(`🔥 [%s] is bearish in 5 minutes, decrease 1%%
-							=> Current price: %fUSDT\n`, coin, prices[idx][1])
+							=> Current price: %fUSDT\n`, coin, prices[idx][QueueLength-1])
 				}
 				prices[idx] = prices[idx][1:]
 			}
