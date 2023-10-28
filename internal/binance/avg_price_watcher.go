@@ -34,6 +34,6 @@ func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh 
 							=> Current low price: USDT\n`, coin)
 			}
 		}
-		time.Sleep(time.Second * 30)
+		time.Sleep(time.Second * 5)
 	}
 }
