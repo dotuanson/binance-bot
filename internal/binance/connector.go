@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+const (
+	QueueLength int = 10
+)
+
 func GetAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coins []string) {
 	prices := make([][]float64, len(coins))
 	for i := 0; i < len(coins); i++ {
@@ -25,8 +29,8 @@ func GetAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh ch
 				errCh <- err
 			}
 			prices[idx] = append(prices[idx], price)
-			if len(prices[idx]) >= 10 {
-				diff := prices[idx][1] - prices[idx][0]
+			if len(prices[idx]) >= QueueLength {
+				diff := prices[idx][QueueLength-1] - prices[idx][0]
 				percent := diff / prices[idx][0] * 100
 				log.Printf("[%s] CurPrice=%f : increase %.2f%%\n", coin, prices[idx][1], percent)
 				if (percent - 1) >= 0 {
