@@ -33,7 +33,9 @@ func main() {
 
 	client := binanceConnector.NewClient(config.ApiKEY, config.SecretKEY, config.BaseURL)
 	textCh := make(chan string, 10)
-	go binance.WatchAvgPrice(ctx, client, textCh, errCh, config.CoinLIST)
+	for _, coin := range config.CoinLIST {
+		go binance.WatchAvgPrice(ctx, client, textCh, errCh, coin)
+	}
 	go telegram.SendTeleAlert(bot, config.TeleCHATID, textCh, errCh)
 	go rss.FeedRSS(FeedUrls, textCh)
 	for {
