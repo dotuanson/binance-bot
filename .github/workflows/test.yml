@@ -1,0 +1,30 @@
+name: Run unit test
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+    name: Run unit test
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: Load environment variables
+        run: |
+          echo "API_KEY=${{ secrets.API_KEY }}" >> dev.env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> dev.env
+          echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" >> dev.env
+          echo "TELEGRAM_CHATID=${{ secrets.TELEGRAM_CHATID }}" >> dev.env
+          echo "COIN_LIST=${{ vars.COIN_LIST }}" >> dev.env
+          echo "BASE_URL=${{ vars.BASE_URL }}" >> dev.env
+
+      - name: Unit test
+        run: make test

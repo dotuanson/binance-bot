@@ -3,21 +3,15 @@ name: Test and deploy with Docker Compose on Self Hosted
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
-
-  test:
+  deploy:
+    name: Deploy to Production
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.20'
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Load environment variables
         run: |
@@ -31,5 +25,5 @@ jobs:
       - name: Unit test
         run: make test
 
-      - name: Deploy on self hosted
+      - name: Deploy to Self Hosted
         run: make deploy
