@@ -1,18 +1,16 @@
-name: Test and deploy with Docker Compose on Self Hosted
+name: Run unit test
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
 jobs:
-
   test:
-    runs-on: self-hosted
-
+    name: Run unit test
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -30,6 +28,3 @@ jobs:
 
       - name: Unit test
         run: make test
-
-      - name: Deploy on self hosted
-        run: make deploy
