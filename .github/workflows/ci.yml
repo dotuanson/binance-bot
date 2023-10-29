@@ -28,7 +28,7 @@ jobs:
           echo "COIN_LIST=${{ vars.COIN_LIST }}" >> dev.env
           echo "BASE_URL=${{ vars.BASE_URL }}" >> dev.env
 
-      - name: Test
+      - name: Unit test
         run: make test
 
       - name: Deploy on self hosted

@@ -1,5 +1,5 @@
 test:
-	go test -v ./test/
+	go test -race -v ./test/
 
 build:
 	rm -rf ./cmd/binance-bot
