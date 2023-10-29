@@ -9,10 +9,14 @@ import (
 	"time"
 )
 
+const (
+	unitPrice = "USDT"
+)
+
 func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coins []string) {
 	for {
 		for _, coin := range coins {
-			kLines, err := client.NewKlinesService().Symbol(coin).Interval("5m").Do(ctx)
+			kLines, err := client.NewKlinesService().Symbol(coin + unitPrice).Interval("5m").Do(ctx)
 			if err != nil {
 				errCh <- err
 			}
