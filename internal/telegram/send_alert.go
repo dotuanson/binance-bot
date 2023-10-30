@@ -6,6 +6,7 @@ func SendTeleAlert(bot *tgbotapi.BotAPI, teleChatID int64, textCh <-chan string,
 	for {
 		msg := tgbotapi.NewMessage(teleChatID, <-textCh)
 		msg.DisableWebPagePreview = true
+		msg.ParseMode = "markdown"
 		_, err := bot.Send(msg)
 		if err != nil {
 			errCh <- err
