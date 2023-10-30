@@ -7,7 +7,8 @@ import (
 )
 
 func TestSendAlert(t *testing.T) {
-	text := tgbotapi.NewMessage(1092208354, "Skip this message!")
+	text := tgbotapi.NewMessage(1092208354, "*Skip this message!*")
+	text.ParseMode = "markdown"
 	_, err := testTgBotAPI.Send(text)
 	require.NoError(t, err)
 }
