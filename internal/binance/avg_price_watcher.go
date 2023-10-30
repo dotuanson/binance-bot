@@ -22,11 +22,10 @@ func decreaseOneSecondWatchDogTimer(timer *int64) {
 	}
 }
 
-func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coin string) {
+func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, threshold float64, textCh chan<- string, errCh chan<- error, coin string) {
 	var (
-		watchdogTimerOnePercentThreshold int64   = 0
-		watchdogTimerTwoPercentThreshold int64   = 0
-		threshold                        float64 = 1.0
+		watchdogTimerFirstThreshold  int64 = 0
+		watchdogTimerSecondThreshold int64 = 0
 	)
 	for {
 		kLines, err := client.NewKlinesService().Symbol(coin + unitPrice).
@@ -55,13 +54,13 @@ func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh 
 			"Close Price: %f, "+
 			"Open Price: %f, "+
 			"Threshold: %f", coin, percent, closePrice, openPrice, threshold)
-		if decreaseOneSecondWatchDogTimer(&watchdogTimerOnePercentThreshold); math.Abs(percent) > 1.0 && watchdogTimerOnePercentThreshold <= 0 {
-			watchdogTimerOnePercentThreshold = 5
+		if decreaseOneSecondWatchDogTimer(&watchdogTimerFirstThreshold); math.Abs(percent) > threshold && watchdogTimerFirstThreshold <= 0 {
+			watchdogTimerFirstThreshold = 5
 			textCh <- fmt.Sprintf("%s has just modified %.2f%% in 5m, "+
 				"current price: %f USDT\n", coin, percent, closePrice)
 		}
-		if decreaseOneSecondWatchDogTimer(&watchdogTimerTwoPercentThreshold); math.Abs(percent) > 2.0 && watchdogTimerTwoPercentThreshold <= 0 {
-			watchdogTimerTwoPercentThreshold = 10
+		if decreaseOneSecondWatchDogTimer(&watchdogTimerSecondThreshold); math.Abs(percent) > threshold+1.0 && watchdogTimerSecondThreshold <= 0 {
+			watchdogTimerSecondThreshold = 10
 			if percent >= 0 {
 				textCh <- fmt.Sprintf("*🚀 %s is having a bull-run in 5m!*", coin)
 			} else {

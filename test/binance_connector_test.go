@@ -18,7 +18,6 @@ func TestKlines(t *testing.T) {
 		Interval("1m").Limit(6).
 		Do(context.Background())
 	log.Println(binanceConnector.PrettyPrint(res))
-	log.Println(len(res))
 	require.NoError(t, err)
 }
 
