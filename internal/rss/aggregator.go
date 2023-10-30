@@ -46,6 +46,6 @@ func FeedRSS(feedUrls []string, textCh chan<- string) {
 				}(item)
 			}
 		}
-		time.Sleep(time.Hour * 4)
+		time.Sleep(time.Minute * 30)
 	}
 }
