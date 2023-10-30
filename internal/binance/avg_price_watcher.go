@@ -5,6 +5,7 @@ import (
 	"fmt"
 	binanceConnector "github.com/binance/binance-connector-go"
 	"log"
+	"math"
 	"strconv"
 	"time"
 )
@@ -14,12 +15,8 @@ const (
 )
 
 func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coin string) {
-	var (
-		thresholdUp   float64 = 1.0
-		thresholdDown float64 = 1.0
-	)
+	var threshold = 1.0
 	for {
-
 		kLines, err := client.NewKlinesService().Symbol(coin + unitPrice).Interval("5m").Do(ctx)
 		if err != nil {
 			errCh <- err
@@ -39,29 +36,24 @@ func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh 
 			"Percent: %.2f %%, "+
 			"Close Price: %f, "+
 			"Open Price: %f, "+
-			"Threshold Up: %f, "+
-			"Threshold Down: %f", coin, percent, closePrice, openPrice, thresholdUp, thresholdDown)
-		if (percent - thresholdUp) >= 0 {
-			textCh <- fmt.Sprintf("🚀 [%s] is BULLISH (up %.2f%%) in 5m, "+
-				"price: %f USDT\n", coin, thresholdUp, closePrice)
-			thresholdUp += 0.1
-			time.Sleep(time.Second * 25)
-		} else if (-percent - thresholdDown) >= 0 {
-			textCh <- fmt.Sprintf("🔥 [%s] is BEARISH (down %.2f%%) in 5m, "+
-				"price: %f USDT\n", coin, thresholdDown, closePrice)
-			thresholdDown += 0.1
-			time.Sleep(time.Second * 25)
+			"Threshold: %f", coin, percent, closePrice, openPrice, threshold)
+		if math.Pow(percent, 2)-math.Pow(threshold, 2) > 0 {
+			if (threshold - 1.0) <= 1e-9 {
+				textCh <- fmt.Sprintf("[%s] has just modified %.2f%% in 5m, "+
+					"price: %f USDT\n", coin, percent, closePrice)
+				threshold = percent
+				time.Sleep(time.Second * 25)
+			} else {
+				if percent >= 0 {
+					textCh <- fmt.Sprintf("🚀 [%s] is having a bull-run in 5m!", coin)
+				} else {
+					textCh <- fmt.Sprintf("🔥 [%s] is having a bear-run in 5m!", coin)
+				}
+				threshold = 1.0
+				time.Sleep(time.Second * 55)
+			}
 		} else {
-			if thresholdUp -= 0.1; (thresholdUp - 1.0) <= 0.0 {
-				thresholdUp = 1.0
-			} else {
-				time.Sleep(time.Second * 25)
-			}
-			if thresholdDown -= 0.1; (thresholdDown - 1.0) <= 0.0 {
-				thresholdDown = 1.0
-			} else {
-				time.Sleep(time.Second * 25)
-			}
+			threshold = 1.0
 		}
 		time.Sleep(time.Second * 5)
 	}
