@@ -14,8 +14,11 @@ func TestHistoricalTradeLookup(t *testing.T) {
 }
 
 func TestKlines(t *testing.T) {
-	res, err := testClient.NewKlinesService().Symbol("NEARUSDT").Interval("5m").Do(context.Background())
-	log.Println(binanceConnector.PrettyPrint(res[len(res)-1]))
+	res, err := testClient.NewKlinesService().Symbol("NEARUSDT").
+		Interval("1m").Limit(6).
+		Do(context.Background())
+	log.Println(binanceConnector.PrettyPrint(res))
+	log.Println(len(res))
 	require.NoError(t, err)
 }
 

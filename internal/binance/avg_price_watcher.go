@@ -29,15 +29,18 @@ func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, textCh 
 		threshold                        float64 = 1.0
 	)
 	for {
-		kLines, err := client.NewKlinesService().Symbol(coin + unitPrice).Interval("5m").Do(ctx)
+		kLines, err := client.NewKlinesService().Symbol(coin + unitPrice).
+			Interval("1m").Limit(6).
+			Do(ctx)
 		if err != nil {
 			errCh <- err
 		}
-		if len(kLines) == 0 {
+		if len(kLines) != 6 {
 			continue
 		}
 		lastKLine := kLines[len(kLines)-1]
-		openPrice, err := strconv.ParseFloat(lastKLine.Open, 64)
+		beginKLine := kLines[0]
+		openPrice, err := strconv.ParseFloat(beginKLine.Open, 64)
 		if err != nil {
 			errCh <- err
 		}
