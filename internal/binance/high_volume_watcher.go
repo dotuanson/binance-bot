@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func WhaleWatcher(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coin string) {
+func WatchHighVolume(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coin string) {
 	const (
 		ratioVolume    = 30.0
 		numberOfKlines = 3

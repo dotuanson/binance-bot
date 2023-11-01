@@ -21,7 +21,7 @@ func decreaseOneSecondWatchDogTimer(timer *int64) {
 	}
 }
 
-func WatchAvgPrice(ctx context.Context, client *binanceConnector.Client, threshold float64, textCh chan<- string, errCh chan<- error, coin string) {
+func WatchSpikePrice(ctx context.Context, client *binanceConnector.Client, threshold float64, textCh chan<- string, errCh chan<- error, coin string) {
 	var (
 		watchdogTimerFirstThreshold  int64 = 0
 		watchdogTimerSecondThreshold int64 = 0

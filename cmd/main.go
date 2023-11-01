@@ -34,14 +34,14 @@ func main() {
 	textCh := make(chan string, 10)
 	for _, coin := range config.CoinLIST {
 		if coin == "BTC" {
-			go binance.WatchAvgPrice(ctx, client, 0.5, textCh, errCh, coin)
+			go binance.WatchSpikePrice(ctx, client, 0.5, textCh, errCh, coin)
 
 		} else {
-			go binance.WatchAvgPrice(ctx, client, 1.5, textCh, errCh, coin)
+			go binance.WatchSpikePrice(ctx, client, 1.5, textCh, errCh, coin)
 		}
 	}
 	for _, coin := range config.CoinLIST {
-		go binance.WhaleWatcher(ctx, client, textCh, errCh, coin)
+		go binance.WatchHighVolume(ctx, client, textCh, errCh, coin)
 	}
 	go telegram.SendTeleAlert(bot, config.TeleCHATID, textCh, errCh)
 	//go rss.FeedRSS(FeedUrls, textCh)
