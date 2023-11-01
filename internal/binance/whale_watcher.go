@@ -4,14 +4,13 @@ import (
 	"context"
 	"fmt"
 	binanceConnector "github.com/binance/binance-connector-go"
-	"log"
 	"strconv"
 	"time"
 )
 
 func WhaleWatcher(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coin string) {
 	const (
-		ratioVolume    = 50.0
+		ratioVolume    = 30.0
 		numberOfKlines = 3
 	)
 	for {
@@ -51,10 +50,10 @@ func WhaleWatcher(ctx context.Context, client *binanceConnector.Client, textCh c
 		if lastVolume < 1e-9 {
 			continue
 		}
-		log.Printf("Coin: %s, "+
-			"Current Price: %f, "+
-			"Last/ Middle Volume: %f, "+
-			"Last/ First Volume: %f", coin, lastPrice, lastVolume/middleVolume, lastVolume/firstVolume)
+		//log.Printf("Coin: %s, "+
+		//	"Current Price: %f, "+
+		//	"Last/ Middle Volume: %f, "+
+		//	"Last/ First Volume: %f", coin, lastPrice, lastVolume/middleVolume, lastVolume/firstVolume)
 		if lastVolume > 2*ratioVolume*firstVolume {
 			diff := lastPrice - firstPrice
 			percent := diff / firstPrice * 100
