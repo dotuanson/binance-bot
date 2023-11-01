@@ -11,7 +11,7 @@ import (
 
 func WhaleWatcher(ctx context.Context, client *binanceConnector.Client, textCh chan<- string, errCh chan<- error, coin string) {
 	const (
-		ratioVolume    = 10.0
+		ratioVolume    = 50.0
 		numberOfKlines = 3
 	)
 	for {
@@ -58,23 +58,23 @@ func WhaleWatcher(ctx context.Context, client *binanceConnector.Client, textCh c
 		if lastVolume > 2*ratioVolume*firstVolume {
 			diff := lastPrice - firstPrice
 			percent := diff / firstPrice * 100
-			if percent >= 0 {
-				textCh <- fmt.Sprintf("[x200] 🚀 %s is having a bull-run with %.2f%%,"+
-					"current price: %f USDT", coin, percent, lastPrice)
-			} else {
-				textCh <- fmt.Sprintf("[x200] 🔥 %s is having a bull-run with %.2f%%,"+
-					"current price: %f USDT", coin, percent, lastPrice)
+			if percent >= 2 {
+				textCh <- fmt.Sprintf("*[x%f] 🚀 %s is having a bull-run with %.2f%%, "+
+					"current price: %f USDT*", 2*ratioVolume, coin, percent, lastPrice)
+			} else if -percent >= 2 {
+				textCh <- fmt.Sprintf("*[x%f] 🔥 %s is having a bull-run with %.2f%%, "+
+					"current price: %f USDT*", 2*ratioVolume, coin, percent, lastPrice)
 			}
 			time.Sleep(time.Second * 30)
 		} else if lastVolume > ratioVolume*middleVolume {
 			diff := lastPrice - middlePrice
 			percent := diff / middlePrice * 100
-			if percent >= 0 {
-				textCh <- fmt.Sprintf("[x100] 🚀 %s has just modified %.2f%%,"+
-					"current price: %f USDT", coin, percent, lastPrice)
-			} else {
-				textCh <- fmt.Sprintf("[x100] 🔥 %s has just modified %.2f%%,"+
-					"current price: %f USDT", coin, percent, lastPrice)
+			if percent >= 2 {
+				textCh <- fmt.Sprintf("[x%f] 🚀 %s has just modified %.2f%%, "+
+					"current price: %f USDT", ratioVolume, coin, percent, lastPrice)
+			} else if -percent >= 2 {
+				textCh <- fmt.Sprintf("[x%f] 🔥 %s has just modified %.2f%%, "+
+					"current price: %f USDT", ratioVolume, coin, percent, lastPrice)
 			}
 			time.Sleep(time.Second * 20)
 		}
