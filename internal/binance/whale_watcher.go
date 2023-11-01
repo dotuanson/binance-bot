@@ -52,7 +52,7 @@ func WhaleWatcher(ctx context.Context, client *binanceConnector.Client, textCh c
 			continue
 		}
 		log.Printf("Coin: %s, "+
-			"Current Price: %.2f, "+
+			"Current Price: %f, "+
 			"Last/ Middle Volume: %f, "+
 			"Last/ First Volume: %f", coin, lastPrice, lastVolume/middleVolume, lastVolume/firstVolume)
 		if lastVolume > 2*ratioVolume*firstVolume {

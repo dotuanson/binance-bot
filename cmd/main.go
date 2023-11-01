@@ -32,14 +32,14 @@ func main() {
 
 	client := binanceConnector.NewClient(config.ApiKEY, config.SecretKEY, config.BaseURL)
 	textCh := make(chan string, 10)
-	//for _, coin := range config.CoinLIST {
-	//	if coin == "BTC" {
-	//		go binance.WatchAvgPrice(ctx, client, 0.5, textCh, errCh, coin)
-	//
-	//	} else {
-	//		go binance.WatchAvgPrice(ctx, client, 1.5, textCh, errCh, coin)
-	//	}
-	//}
+	for _, coin := range config.CoinLIST {
+		if coin == "BTC" {
+			go binance.WatchAvgPrice(ctx, client, 0.5, textCh, errCh, coin)
+
+		} else {
+			go binance.WatchAvgPrice(ctx, client, 1.5, textCh, errCh, coin)
+		}
+	}
 	for _, coin := range config.CoinLIST {
 		go binance.WhaleWatcher(ctx, client, textCh, errCh, coin)
 	}
