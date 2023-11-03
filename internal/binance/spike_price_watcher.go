@@ -53,17 +53,19 @@ func WatchSpikePrice(ctx context.Context, client *binanceConnector.Client, thres
 		//	"Close Price: %f, "+
 		//	"Open Price: %f, "+
 		//	"Threshold: %f", coin, percent, closePrice, openPrice, threshold)
-		if decreaseOneSecondWatchDogTimer(&watchdogTimerFirstThreshold); math.Abs(percent) > threshold && watchdogTimerFirstThreshold <= 0 {
+		decreaseOneSecondWatchDogTimer(&watchdogTimerFirstThreshold)
+		decreaseOneSecondWatchDogTimer(&watchdogTimerSecondThreshold)
+		if math.Abs(percent) > threshold && watchdogTimerFirstThreshold <= 0 {
 			watchdogTimerFirstThreshold = 6
 			textCh <- fmt.Sprintf("%s has just modified %.2f%% in 5m, "+
 				"current price: %f USDT\n", coin, percent, closePrice)
-		}
-		if decreaseOneSecondWatchDogTimer(&watchdogTimerSecondThreshold); math.Abs(percent) > threshold+1.0 && watchdogTimerSecondThreshold <= 0 {
-			watchdogTimerSecondThreshold = 6 * 3
-			if percent >= 0 {
-				textCh <- fmt.Sprintf("*🚀 %s is having a bull-run in 5m!*", coin)
-			} else {
-				textCh <- fmt.Sprintf("*🔥 %s is having a bear-run in 5m!*", coin)
+			if math.Abs(percent) > threshold+1.0 && watchdogTimerSecondThreshold <= 0 {
+				watchdogTimerSecondThreshold = 6
+				if percent >= 0 {
+					textCh <- fmt.Sprintf("*🚀 %s is having a bull-run in 5m!*", coin)
+				} else {
+					textCh <- fmt.Sprintf("*🔥 %s is having a bear-run in 5m!*", coin)
+				}
 			}
 		}
 		time.Sleep(tick)
