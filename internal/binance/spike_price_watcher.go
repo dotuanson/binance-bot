@@ -47,7 +47,7 @@ func WatchSpikePrice(ctx context.Context, client *binanceConnector.Client, thres
 		percent := diff / openPrice * 100
 		decreaseOneSecondWatchDogTimer(&watchdogTimer)
 		if math.Abs(percent) > threshold && watchdogTimer <= 0 {
-			watchdogTimer = 6
+			watchdogTimer = 18
 			if percent >= 0 {
 				textCh <- fmt.Sprintf("🚀 %s has just modified %.2f%% in 5m, "+
 					"current price: %f USDT\n", coin, percent, closePrice)
