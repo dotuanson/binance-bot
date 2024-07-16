@@ -61,7 +61,7 @@ make deploy
 
 <h2 id="contributing-to-project"> 👋 Contributing to project </h2>
 
-1. Fork the Project
+1. Fork the Project 
 2. Create your Feature Branch (`git checkout -b feature/<YOUR-FEATURE>`)
 3. Commit your Changes (`git commit -m 'Add some <YOUR-FEATURE>'`)
 4. Push to the Branch (`git push origin feature/<YOUR-FEATURE>`)
